@@ -77,12 +77,13 @@ class Loadcell(Sensor, EasyResource):
             measures = hx711.get_raw_data(times=self.numberOfReadings)
             avg = sum(measures) / len(measures)
             avg -= self.tare_offset  # Subtract tare offset from readings
+            kgs = avg / 8200  # Assuming 8200 ~ 1kg, then this converts to kg
         finally:
             GPIO.cleanup()  # Always clean up GPIO
 
         # Return a dictionary of the readings
         return {
-            "weight": avg
+            "weight": kgs
         }
 
     async def tare(self):
@@ -102,19 +103,19 @@ class Loadcell(Sensor, EasyResource):
         finally:
             GPIO.cleanup()  # Always clean up GPIO
 
-async def do_command(
-        self,
-        command: Mapping[str, ValueTypes],
-        *,
-        timeout: Optional[float] = None,
-        **kwargs
-    ) -> Mapping[str, ValueTypes]:
-        result = {key: False for key in command.keys()}
-        for (name, args) in command.items():
-            if name == 'tare':
-                self.tare(*args)
-                result[name] = True
-        return result
+    async def do_command(
+            self,
+            command: Mapping[str, ValueTypes],
+            *,
+            timeout: Optional[float] = None,
+            **kwargs
+        ) -> Mapping[str, ValueTypes]:
+            result = {key: False for key in command.keys()}
+            for (name, args) in command.items():
+                if name == 'tare':
+                    await self.tare(*args)
+                    result[name] = True
+            return result
 
 if __name__ == "__main__":
     asyncio.run(Module.run_from_registry())
