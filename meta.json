@@ -1,0 +1,15 @@
+{
+  "$schema": "https://dl.viam.dev/module.schema.json",
+  "module_id": "edss:hx711",
+  "visibility": "private",
+  "url": "",
+  "description": "Modular sensor component: hx711Sensor",
+  "models": [
+    {
+      "api": "rdk:component:sensor",
+      "model": "edss:hx711:hx711Sensor"
+    }
+  ],
+  "entrypoint": "./run.sh",
+  "first_run": ""
+}

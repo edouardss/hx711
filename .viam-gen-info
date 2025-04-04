@@ -1,0 +1,12 @@
+{
+  "module_name": "hx711",
+  "namespace": "edss",
+  "language": "python",
+  "resource_type": "component",
+  "resource_subtype": "sensor",
+  "model_name": "hx711Sensor",
+  "enable_cloud_build": false,
+  "initialize_git": false,
+  "generator_version": "0.1.0",
+  "generated_on": "2025-01-19T05:14:37.139777325Z"
+}
