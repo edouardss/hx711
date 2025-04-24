@@ -75,9 +75,9 @@ class Loadcell(Sensor, EasyResource):
 
             hx711.reset()   # Reset the HX711 before starting
             measures = hx711.get_raw_data(times=self.numberOfReadings)
-            avg = sum(measures) / len(measures)
-            avg -= self.tare_offset  # Subtract tare offset from readings
-            kgs = avg / 8200  # Assuming 8200 ~ 1kg, then this converts to kg
+            # Convert each measure to kgs by subtracting tare offset and dividing by 8200
+            measures_kg = [(measure - self.tare_offset) / 8200 for measure in measures]
+            avg_kgs = sum(measures_kg) / len(measures_kg)  # Assuming 8200 ~ 1kg, then this converts to kg
         finally:
             GPIO.cleanup()  # Always clean up GPIO
 
@@ -88,7 +88,8 @@ class Loadcell(Sensor, EasyResource):
             "gain": self.gain,
             "numberOfReadings": self.numberOfReadings,
             "tare_offset": self.tare_offset,
-            "weight": kgs
+            "measures": measures_kg,  # Now returning measures in kg
+            "weight": avg_kgs
         }
 
     async def tare(self):
